@@ -41,6 +41,8 @@
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.button4 = new System.Windows.Forms.Button();
             this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // listBox1
@@ -50,7 +52,7 @@
             this.listBox1.ForeColor = System.Drawing.SystemColors.InactiveBorder;
             this.listBox1.FormattingEnabled = true;
             this.listBox1.ItemHeight = 20;
-            this.listBox1.Location = new System.Drawing.Point(12, 68);
+            this.listBox1.Location = new System.Drawing.Point(12, 91);
             this.listBox1.Margin = new System.Windows.Forms.Padding(12);
             this.listBox1.Name = "listBox1";
             this.listBox1.Size = new System.Drawing.Size(287, 264);
@@ -76,9 +78,9 @@
             this.button1.BackColor = System.Drawing.Color.Black;
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 32F);
             this.button1.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.button1.Location = new System.Drawing.Point(12, 347);
+            this.button1.Location = new System.Drawing.Point(12, 370);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(131, 91);
+            this.button1.Size = new System.Drawing.Size(131, 122);
             this.button1.TabIndex = 2;
             this.button1.Text = "+";
             this.button1.UseVisualStyleBackColor = false;
@@ -90,9 +92,9 @@
             this.button3.BackColor = System.Drawing.Color.Black;
             this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 32F);
             this.button3.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.button3.Location = new System.Drawing.Point(168, 347);
+            this.button3.Location = new System.Drawing.Point(168, 370);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(131, 91);
+            this.button3.Size = new System.Drawing.Size(131, 122);
             this.button3.TabIndex = 4;
             this.button3.Text = "-";
             this.button3.UseVisualStyleBackColor = false;
@@ -103,7 +105,7 @@
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label2.AutoSize = true;
             this.label2.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.label2.Location = new System.Drawing.Point(314, 68);
+            this.label2.Location = new System.Drawing.Point(314, 91);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(431, 20);
             this.label2.TabIndex = 5;
@@ -114,7 +116,7 @@
             this.textBox1.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.textBox1.BackColor = System.Drawing.Color.Black;
             this.textBox1.ForeColor = System.Drawing.Color.White;
-            this.textBox1.Location = new System.Drawing.Point(318, 91);
+            this.textBox1.Location = new System.Drawing.Point(318, 114);
             this.textBox1.Name = "textBox1";
             this.textBox1.Size = new System.Drawing.Size(470, 26);
             this.textBox1.TabIndex = 6;
@@ -125,7 +127,7 @@
             this.button2.BackColor = System.Drawing.Color.Black;
             this.button2.Font = new System.Drawing.Font("Microsoft Sans Serif", 40F);
             this.button2.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.button2.Location = new System.Drawing.Point(318, 231);
+            this.button2.Location = new System.Drawing.Point(314, 294);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(470, 101);
             this.button2.TabIndex = 7;
@@ -142,7 +144,7 @@
             this.lblFileCount.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblFileCount.AutoSize = true;
             this.lblFileCount.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.lblFileCount.Location = new System.Drawing.Point(314, 120);
+            this.lblFileCount.Location = new System.Drawing.Point(314, 143);
             this.lblFileCount.Name = "lblFileCount";
             this.lblFileCount.Size = new System.Drawing.Size(155, 20);
             this.lblFileCount.TabIndex = 8;
@@ -153,17 +155,17 @@
             this.lblStatus.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblStatus.AutoSize = true;
             this.lblStatus.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.lblStatus.Location = new System.Drawing.Point(314, 140);
+            this.lblStatus.Location = new System.Drawing.Point(314, 163);
             this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(189, 20);
+            this.lblStatus.Size = new System.Drawing.Size(134, 20);
             this.lblStatus.TabIndex = 9;
-            this.lblStatus.Text = "Processing: Nothing... 0%";
+            this.lblStatus.Text = "Processing: ... 0%";
             this.lblStatus.Click += new System.EventHandler(this.lblStatus_Click);
             // 
             // progressBar1
             // 
             this.progressBar1.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.progressBar1.Location = new System.Drawing.Point(318, 163);
+            this.progressBar1.Location = new System.Drawing.Point(314, 226);
             this.progressBar1.Name = "progressBar1";
             this.progressBar1.Size = new System.Drawing.Size(470, 62);
             this.progressBar1.TabIndex = 10;
@@ -174,7 +176,7 @@
             this.button4.BackColor = System.Drawing.Color.Black;
             this.button4.Font = new System.Drawing.Font("Microsoft Sans Serif", 40F);
             this.button4.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.button4.Location = new System.Drawing.Point(318, 338);
+            this.button4.Location = new System.Drawing.Point(314, 391);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(470, 101);
             this.button4.TabIndex = 11;
@@ -193,12 +195,36 @@
             this.checkBox1.Text = "Case-Sensitive";
             this.checkBox1.UseVisualStyleBackColor = true;
             // 
+            // label3
+            // 
+            this.label3.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.label3.AutoSize = true;
+            this.label3.ForeColor = System.Drawing.Color.White;
+            this.label3.Location = new System.Drawing.Point(314, 183);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(252, 20);
+            this.label3.TabIndex = 13;
+            this.label3.Text = "Lines processed: 0 of 0 (single file)";
+            // 
+            // label4
+            // 
+            this.label4.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.label4.AutoSize = true;
+            this.label4.ForeColor = System.Drawing.Color.White;
+            this.label4.Location = new System.Drawing.Point(314, 203);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(60, 20);
+            this.label4.TabIndex = 14;
+            this.label4.Text = "Speed:";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.ClientSize = new System.Drawing.Size(800, 497);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.label3);
             this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.button4);
             this.Controls.Add(this.progressBar1);
@@ -233,6 +259,8 @@
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
     }
 }
 

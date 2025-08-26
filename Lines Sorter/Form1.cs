@@ -97,7 +97,7 @@ private async void button2_Click(object sender, EventArgs e)
                 ? StringComparison.Ordinal
                 : StringComparison.OrdinalIgnoreCase;
 
-            // --- (Initialization and UI setup are correct and remain the same) ---
+            // --- (Initialization and UI setup) ---
             _cancellationTokenSource = new System.Threading.CancellationTokenSource();
             var token = _cancellationTokenSource.Token;
             int totalFiles = listBox1.Items.Count;
@@ -107,6 +107,8 @@ private async void button2_Click(object sender, EventArgs e)
             progressBar1.Value = 0;
             lblFileCount.Text = "Starting...";
             lblStatus.Text = "";
+            label3.Text = "";
+            label4.Text = "";
 
             try
             {
@@ -123,7 +125,7 @@ private async void button2_Click(object sender, EventArgs e)
 
                         this.Invoke((System.Action)delegate {
                             lblFileCount.Text = $"Processing file {processedFiles} of {totalFiles}";
-                            progressBar1.Value = 0; // Reset for the new file
+                            progressBar1.Value = 0;
                         });
 
                         try
@@ -141,14 +143,34 @@ private async void button2_Click(object sender, EventArgs e)
                             using (var sr = new System.IO.StreamReader(fs))
                             {
                                 string line;
-                                // *** MODIFIED: Set up for Balanced update ***
-                                long lineCount = 0;
-                                const int reportInterval = 100000; // Update every 100,000 lines
+                                long linesProcessedThisFile = 0;
+                                long lastUpdateLineCount = 0;
+                                var lastUpdateTime = DateTime.UtcNow;
+                                const double updateIntervalSeconds = 1.0;
+
+                                // --- NEW: Variables for line estimation ---
+                                long estimatedTotalLines = 0;
+                                const int linesForEstimation = 100000;
 
                                 while ((line = sr.ReadLine()) != null)
                                 {
                                     if (token.IsCancellationRequested) break;
+                                    linesProcessedThisFile++;
 
+                                    // --- NEW: Line estimation logic ---
+                                    if (estimatedTotalLines == 0 && linesProcessedThisFile == linesForEstimation)
+                                    {
+                                        if (totalBytes > 0)
+                                        {
+                                            double percentRead = (double)fs.Position / totalBytes;
+                                            if (percentRead > 0)
+                                            {
+                                                estimatedTotalLines = (long)(linesForEstimation / percentRead);
+                                            }
+                                        }
+                                    }
+
+                                    // (Search logic remains the same)
                                     foreach (var term in searchTerms)
                                     {
                                         if (line.IndexOf(term, comparisonMode) >= 0)
@@ -158,21 +180,39 @@ private async void button2_Click(object sender, EventArgs e)
                                         }
                                     }
 
-                                    // *** MODIFIED: The "Balanced" progress update logic ***
-                                    lineCount++;
-                                    if (lineCount % reportInterval == 0)
+                                    // (Time-based update logic remains the same)
+                                    var elapsedSeconds = (DateTime.UtcNow - lastUpdateTime).TotalSeconds;
+                                    if (elapsedSeconds >= updateIntervalSeconds)
                                     {
-                                        // Still use file position for an accurate percentage when we do update
+                                        var linesSinceLastUpdate = linesProcessedThisFile - lastUpdateLineCount;
+                                        var linesPerSecond = linesSinceLastUpdate / elapsedSeconds;
                                         int percentage = (totalBytes > 0) ? (int)((double)fs.Position * 100 / totalBytes) : 0;
+
+                                        // --- MODIFIED: Dynamic label text ---
+                                        string lineCountText = (estimatedTotalLines > 0)
+                                            ? $"Line: {linesProcessedThisFile:N0} of ~{estimatedTotalLines:N0}"
+                                            : $"Line: {linesProcessedThisFile:N0}";
+
                                         this.Invoke((System.Action)delegate {
                                             progressBar1.Value = percentage;
                                             lblStatus.Text = $"Processing: {displayName}... {percentage}%";
+                                            label3.Text = lineCountText;
+                                            label4.Text = $"Speed: {linesPerSecond:N0} lines/sec";
                                         });
+
+                                        lastUpdateTime = DateTime.UtcNow;
+                                        lastUpdateLineCount = linesProcessedThisFile;
                                     }
                                 }
+
+                                // --- MODIFIED: Final update shows the TRUE total line count ---
+                                this.Invoke((System.Action)delegate {
+                                    progressBar1.Value = 100;
+                                    lblStatus.Text = $"Finished: {displayName}";
+                                    label3.Text = $"Line: {linesProcessedThisFile:N0} of {linesProcessedThisFile:N0}";
+                                    label4.Text = "";
+                                });
                             }
-                            // Add a final update to show 100% for the completed file
-                            this.Invoke((System.Action)delegate { progressBar1.Value = 100; });
                         }
                         catch (System.Exception ex)
                         {
@@ -187,6 +227,7 @@ private async void button2_Click(object sender, EventArgs e)
                 SetUiStateForProcessing(false);
                 _cancellationTokenSource.Dispose();
             }
+
 
             // --- Post-Processing Logic ---
             if (token.IsCancellationRequested)
