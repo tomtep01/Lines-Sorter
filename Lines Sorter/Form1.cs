@@ -18,7 +18,6 @@ namespace Lines_Sorter
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
             {
-                // If it is, allow the drop by setting the effect to Copy. [14]
                 e.Effect = DragDropEffects.Copy;
             }
         }
@@ -26,7 +25,7 @@ namespace Lines_Sorter
         private void listBox1_DragDrop(object sender, DragEventArgs e)
         {
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
-            // Add each file path to the list box. [16]
+            // Add each file path to the list box.
             foreach (string file in files)
             {
                 listBox1.Items.Add(file);
@@ -57,7 +56,7 @@ namespace Lines_Sorter
             {
                 // Create a temporary list to hold the items to be removed to avoid issues with modifying the collection while iterating over it.
                 var selectedItems = new System.Collections.ArrayList(listBox1.SelectedItems);
-                // Remove each selected item from the list box. [9]
+                // Remove each selected item from the list box.
                 foreach (var item in selectedItems)
                 {
                     listBox1.Items.Remove(item);
@@ -72,7 +71,7 @@ namespace Lines_Sorter
             // Check if there are any file paths listed in the ListBox.
 private async void button2_Click(object sender, EventArgs e)
         {
-            // --- (Initial checks and search term preparation are correct and remain the same) ---
+            // Initial checks and search term preparation are correct and remain the same
             if (listBox1.Items.Count == 0)
             {
                 MessageBox.Show("Please add file paths to the list box.", "No Files Listed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -97,7 +96,7 @@ private async void button2_Click(object sender, EventArgs e)
                 ? StringComparison.Ordinal
                 : StringComparison.OrdinalIgnoreCase;
 
-            // --- (Initialization and UI setup) ---
+            // Initialization and UI setup
             _cancellationTokenSource = new System.Threading.CancellationTokenSource();
             var token = _cancellationTokenSource.Token;
             int totalFiles = listBox1.Items.Count;
@@ -170,7 +169,6 @@ private async void button2_Click(object sender, EventArgs e)
                                         }
                                     }
 
-                                    // (Search logic remains the same)
                                     foreach (var term in searchTerms)
                                     {
                                         if (line.IndexOf(term, comparisonMode) >= 0)
@@ -180,7 +178,6 @@ private async void button2_Click(object sender, EventArgs e)
                                         }
                                     }
 
-                                    // (Time-based update logic remains the same)
                                     var elapsedSeconds = (DateTime.UtcNow - lastUpdateTime).TotalSeconds;
                                     if (elapsedSeconds >= updateIntervalSeconds)
                                     {
@@ -205,7 +202,7 @@ private async void button2_Click(object sender, EventArgs e)
                                     }
                                 }
 
-                                // --- MODIFIED: Final update shows the TRUE total line count ---
+                                // --- MODIFIED: Final update shows the total line count ---
                                 this.Invoke((System.Action)delegate {
                                     progressBar1.Value = 100;
                                     lblStatus.Text = $"Finished: {displayName}";
