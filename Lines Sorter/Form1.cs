@@ -106,8 +106,8 @@ private async void button2_Click(object sender, EventArgs e)
             progressBar1.Value = 0;
             lblFileCount.Text = "Starting...";
             lblStatus.Text = "";
-            label1.Text = "";
-            label2.Text = "";
+            label3.Text = "";
+            label4.Text = "";
 
             try
             {
@@ -188,8 +188,8 @@ private async void button2_Click(object sender, EventArgs e)
                                         this.Invoke((System.Action)delegate {
                                             progressBar1.Value = percentage;
                                             lblStatus.Text = $"Processing: {displayName}... {percentage}%";
-                                            label1.Text = lineCountText;
-                                            label2.Text = $"Speed: {linesPerSecond:N0} lines/sec";
+                                            label3.Text = lineCountText;
+                                            label4.Text = $"Speed: {linesPerSecond:N0} lines/sec";
                                         });
 
                                         lastUpdateTime = DateTime.UtcNow;
@@ -201,8 +201,8 @@ private async void button2_Click(object sender, EventArgs e)
                                 this.Invoke((System.Action)delegate {
                                     progressBar1.Value = 100;
                                     lblStatus.Text = $"Finished: {displayName}";
-                                    label1.Text = $"Line: {linesProcessedThisFile:N0} of {linesProcessedThisFile:N0}";
-                                    label2.Text = "";
+                                    label3.Text = $"Line: {linesProcessedThisFile:N0} of {linesProcessedThisFile:N0}";
+                                    label4.Text = "";
                                 });
                             }
                         }
