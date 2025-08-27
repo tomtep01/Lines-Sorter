@@ -2,9 +2,9 @@ name: .NET Framework Build
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "main" ]
 
 jobs:
   build:
@@ -12,7 +12,7 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Setup MSBuild
       uses: microsoft/setup-msbuild@v1.1
@@ -25,3 +25,9 @@ jobs:
 
     - name: Build solution
       run: msbuild "Lines Sorter.sln" /p:Configuration=Release
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: "Lines Sorter"
+        path: Lines Sorter\bin\Release\
