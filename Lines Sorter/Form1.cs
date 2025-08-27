@@ -71,7 +71,7 @@ namespace Lines_Sorter
             // Check if there are any file paths listed in the ListBox.
 private async void button2_Click(object sender, EventArgs e)
         {
-            // Initial checks and search term preparation are correct and remain the same
+            // Initial checks and search term preparation
             if (listBox1.Items.Count == 0)
             {
                 MessageBox.Show("Please add file paths to the list box.", "No Files Listed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -106,8 +106,8 @@ private async void button2_Click(object sender, EventArgs e)
             progressBar1.Value = 0;
             lblFileCount.Text = "Starting...";
             lblStatus.Text = "";
-            label3.Text = "";
-            label4.Text = "";
+            label1.Text = "";
+            label2.Text = "";
 
             try
             {
@@ -146,29 +146,14 @@ private async void button2_Click(object sender, EventArgs e)
                                 long lastUpdateLineCount = 0;
                                 var lastUpdateTime = DateTime.UtcNow;
                                 const double updateIntervalSeconds = 1.0;
-
-                                // --- NEW: Variables for line estimation ---
                                 long estimatedTotalLines = 0;
-                                const int linesForEstimation = 100000;
 
                                 while ((line = sr.ReadLine()) != null)
                                 {
                                     if (token.IsCancellationRequested) break;
                                     linesProcessedThisFile++;
 
-                                    // --- NEW: Line estimation logic ---
-                                    if (estimatedTotalLines == 0 && linesProcessedThisFile == linesForEstimation)
-                                    {
-                                        if (totalBytes > 0)
-                                        {
-                                            double percentRead = (double)fs.Position / totalBytes;
-                                            if (percentRead > 0)
-                                            {
-                                                estimatedTotalLines = (long)(linesForEstimation / percentRead);
-                                            }
-                                        }
-                                    }
-
+                  
                                     foreach (var term in searchTerms)
                                     {
                                         if (line.IndexOf(term, comparisonMode) >= 0)
@@ -178,14 +163,24 @@ private async void button2_Click(object sender, EventArgs e)
                                         }
                                     }
 
+                                   
                                     var elapsedSeconds = (DateTime.UtcNow - lastUpdateTime).TotalSeconds;
                                     if (elapsedSeconds >= updateIntervalSeconds)
                                     {
+                                        // Continuously update the line estimation
+                                        if (totalBytes > 0)
+                                        {
+                                            double percentRead = (double)fs.Position / totalBytes;
+                                            if (percentRead > 0.001) // Avoid wild estimates at the very beginning
+                                            {
+                                                estimatedTotalLines = (long)(linesProcessedThisFile / percentRead);
+                                            }
+                                        }
+
                                         var linesSinceLastUpdate = linesProcessedThisFile - lastUpdateLineCount;
                                         var linesPerSecond = linesSinceLastUpdate / elapsedSeconds;
                                         int percentage = (totalBytes > 0) ? (int)((double)fs.Position * 100 / totalBytes) : 0;
 
-                                        // --- MODIFIED: Dynamic label text ---
                                         string lineCountText = (estimatedTotalLines > 0)
                                             ? $"Line: {linesProcessedThisFile:N0} of ~{estimatedTotalLines:N0}"
                                             : $"Line: {linesProcessedThisFile:N0}";
@@ -193,8 +188,8 @@ private async void button2_Click(object sender, EventArgs e)
                                         this.Invoke((System.Action)delegate {
                                             progressBar1.Value = percentage;
                                             lblStatus.Text = $"Processing: {displayName}... {percentage}%";
-                                            label3.Text = lineCountText;
-                                            label4.Text = $"Speed: {linesPerSecond:N0} lines/sec";
+                                            label1.Text = lineCountText;
+                                            label2.Text = $"Speed: {linesPerSecond:N0} lines/sec";
                                         });
 
                                         lastUpdateTime = DateTime.UtcNow;
@@ -202,12 +197,12 @@ private async void button2_Click(object sender, EventArgs e)
                                     }
                                 }
 
-                                // --- MODIFIED: Final update shows the total line count ---
+                                // Shows true line count
                                 this.Invoke((System.Action)delegate {
                                     progressBar1.Value = 100;
                                     lblStatus.Text = $"Finished: {displayName}";
-                                    label3.Text = $"Line: {linesProcessedThisFile:N0} of {linesProcessedThisFile:N0}";
-                                    label4.Text = "";
+                                    label1.Text = $"Line: {linesProcessedThisFile:N0} of {linesProcessedThisFile:N0}";
+                                    label2.Text = "";
                                 });
                             }
                         }
