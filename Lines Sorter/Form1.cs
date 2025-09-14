@@ -95,19 +95,21 @@ private async void button2_Click(object sender, EventArgs e)
             var comparisonMode = checkBox1.Checked
                 ? StringComparison.Ordinal
                 : StringComparison.OrdinalIgnoreCase;
-
+            bool isExcludeMode = checkBox2.Checked;
             // Initialization and UI setup
             _cancellationTokenSource = new System.Threading.CancellationTokenSource();
             var token = _cancellationTokenSource.Token;
             int totalFiles = listBox1.Items.Count;
             int processedFiles = 0;
             var linesToKeep = new System.Collections.Generic.List<string>();
+            long foundLinesCount = 0;
             SetUiStateForProcessing(true);
             progressBar1.Value = 0;
             lblFileCount.Text = "Starting...";
             lblStatus.Text = "";
             label3.Text = "";
             label4.Text = "";
+            label5.Text = "";
 
             try
             {
@@ -153,17 +155,26 @@ private async void button2_Click(object sender, EventArgs e)
                                     if (token.IsCancellationRequested) break;
                                     linesProcessedThisFile++;
 
-                  
+
+                                    bool matchFound = false;
                                     foreach (var term in searchTerms)
                                     {
                                         if (line.IndexOf(term, comparisonMode) >= 0)
                                         {
-                                            linesToKeep.Add(line);
+                                            matchFound = true;
                                             break;
                                         }
                                     }
+                               
+                                    // Include mode (false): keep if match (true) -> false != true -> true
+                                    // Exclude mode (true): keep if no match (false) -> true != false -> true
+                                    if (isExcludeMode != matchFound)
+                                    {
+                                        foundLinesCount++;
+                                        linesToKeep.Add(line);
+                                    }
 
-                                   
+
                                     var elapsedSeconds = (DateTime.UtcNow - lastUpdateTime).TotalSeconds;
                                     if (elapsedSeconds >= updateIntervalSeconds)
                                     {
@@ -190,6 +201,7 @@ private async void button2_Click(object sender, EventArgs e)
                                             lblStatus.Text = $"Processing: {displayName}... {percentage}%";
                                             label3.Text = lineCountText;
                                             label4.Text = $"Speed: {linesPerSecond:N0} lines/sec";
+                                            label5.Text = $"Found: {foundLinesCount:N0}";
                                         });
 
                                         lastUpdateTime = DateTime.UtcNow;
@@ -203,6 +215,7 @@ private async void button2_Click(object sender, EventArgs e)
                                     lblStatus.Text = $"Finished: {displayName}";
                                     label3.Text = $"Line: {linesProcessedThisFile:N0} of {linesProcessedThisFile:N0}";
                                     label4.Text = "";
+                                    label5.Text = $"Found: {foundLinesCount:N0}";
                                 });
                             }
                         }
@@ -219,7 +232,7 @@ private async void button2_Click(object sender, EventArgs e)
                 SetUiStateForProcessing(false);
                 _cancellationTokenSource.Dispose();
             }
-
+            label5.Text = $"Found: {foundLinesCount:N0}";
 
             // --- Post-Processing Logic ---
             if (token.IsCancellationRequested)
@@ -262,6 +275,7 @@ private async void button2_Click(object sender, EventArgs e)
             listBox1.Enabled = !isProcessing;
             textBox1.Enabled = !isProcessing;
             checkBox1.Enabled = !isProcessing;
+            checkBox2.Enabled = !isProcessing;
         }
 
         // Helper method to handle saving the file, avoiding code duplication.
