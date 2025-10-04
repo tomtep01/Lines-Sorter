@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.listBox1 = new System.Windows.Forms.ListBox();
             this.label1 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
@@ -45,6 +46,8 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.checkBox2 = new System.Windows.Forms.CheckBox();
+            this.multiThreadCheckBox = new System.Windows.Forms.CheckBox();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // listBox1
@@ -234,12 +237,28 @@
             // 
             this.checkBox2.AutoSize = true;
             this.checkBox2.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.checkBox2.Location = new System.Drawing.Point(12, 22);
+            this.checkBox2.Location = new System.Drawing.Point(12, 9);
             this.checkBox2.Name = "checkBox2";
             this.checkBox2.Size = new System.Drawing.Size(130, 24);
             this.checkBox2.TabIndex = 16;
             this.checkBox2.Text = "Invert Search";
             this.checkBox2.UseVisualStyleBackColor = true;
+            // 
+            // multiThreadCheckBox
+            // 
+            this.multiThreadCheckBox.AutoSize = true;
+            this.multiThreadCheckBox.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.multiThreadCheckBox.Location = new System.Drawing.Point(12, 43);
+            this.multiThreadCheckBox.Name = "multiThreadCheckBox";
+            this.multiThreadCheckBox.Size = new System.Drawing.Size(249, 24);
+            this.multiThreadCheckBox.TabIndex = 17;
+            this.multiThreadCheckBox.Text = "Multi-threaded (less feedback)";
+            this.multiThreadCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // timer1
+            // 
+            this.timer1.Interval = 500;
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
             // Form1
             // 
@@ -247,6 +266,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.ClientSize = new System.Drawing.Size(800, 497);
+            this.Controls.Add(this.multiThreadCheckBox);
             this.Controls.Add(this.checkBox2);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label4);
@@ -289,6 +309,8 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.CheckBox checkBox2;
+        private System.Windows.Forms.CheckBox multiThreadCheckBox;
+        private System.Windows.Forms.Timer timer1;
     }
 }
 
