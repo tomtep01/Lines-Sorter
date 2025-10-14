@@ -38,12 +38,12 @@ namespace Lines_Sorter
                 listBox1.Items.Add(file);
             }
         }
-        private async Task<List<string>> RunSingleThreadedSearch(
-    IEnumerable<object> files,
-    string[] searchTerms,
-    StringComparison comparisonMode,
-    bool isExcludeMode,
-    CancellationToken token)
+        private List<string> RunSingleThreadedSearch(
+     IEnumerable<object> files,
+     string[] searchTerms,
+     StringComparison comparisonMode,
+     bool isExcludeMode,
+     CancellationToken token)
         {
             var linesToKeep = new List<string>();
             long keptLinesCount = 0;
@@ -152,7 +152,6 @@ namespace Lines_Sorter
             return linesToKeep;
         }
 
-        // --- METHOD 2: The high-speed, multi-threaded search logic ---
         private List<string> RunMultiThreadedSearch(
       IEnumerable<object> files,
     string[] searchTerms,
@@ -208,13 +207,12 @@ namespace Lines_Sorter
                     }
                     finally
                     {
-                        // --- CRITICAL CHANGE: Only increment the counter ---
-                        // NO this.Invoke() call here anymore!
+
                         System.Threading.Interlocked.Increment(ref _processedFilesCounter);
                     }
                 });
             }
-            catch (OperationCanceledException) { /* Expected */ }
+            catch (OperationCanceledException) {  }
 
             return linesToKeep.ToList();
         }
@@ -254,9 +252,7 @@ namespace Lines_Sorter
                 MessageBox.Show("Please select at least one file to remove.", "No File Selected", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
-
-            // Check if there are any file paths listed in the ListBox.
-private async void button2_Click(object sender, EventArgs e)
+        private async void button2_Click(object sender, EventArgs e)
         {
             if (listBox1.Items.Count == 0) { MessageBox.Show("Please add file paths."); return; }
             string searchText = textBox1.Text;
@@ -269,11 +265,15 @@ private async void button2_Click(object sender, EventArgs e)
             bool isExcludeMode = checkBox2.Checked;
             bool useMultiThreading = multiThreadCheckBox.Checked;
 
-            // --- 2. UI and Cancellation Setup ---
             _cancellationTokenSource = new System.Threading.CancellationTokenSource();
             var token = _cancellationTokenSource.Token;
             var filesToProcess = listBox1.Items.Cast<object>().ToList();
-            List<string> finalResults = new List<string>(); // Initialize to avoid nulls
+            List<string> finalResults = new List<string>();
+
+
+            _totalFilesToProcess = filesToProcess.Count;
+            _processedFilesCounter = 0;
+            _keptLinesCounter = 0;
 
             SetUiStateForProcessing(true);
             ConfigureUiForMode(useMultiThreading);
@@ -282,27 +282,26 @@ private async void button2_Click(object sender, EventArgs e)
             {
                 timer1.Start();
             }
-            // --- 3. Run the Correct Search Method ---
+
             try
             {
                 if (useMultiThreading)
                 {
-                    // This is correct: Run the blocking parallel method on a background thread.
                     finalResults = await Task.Run(() =>
                         RunMultiThreadedSearch(filesToProcess, searchTerms, comparisonMode, isExcludeMode, token), token)
                         .ConfigureAwait(false);
                 }
                 else
                 {
-                    // This is also correct: Await the async single-threaded method directly.
-                    finalResults = await RunSingleThreadedSearch(filesToProcess, searchTerms, comparisonMode, isExcludeMode, token)
+
+                    finalResults = await Task.Run(() =>
+                        RunSingleThreadedSearch(filesToProcess, searchTerms, comparisonMode, isExcludeMode, token), token)
                         .ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
             {
-                // Gracefully handle cancellation if the task itself throws it
-                finalResults = new List<string>(); // Ensure results are empty on cancel
+                finalResults = new List<string>();
             }
             finally
             {
@@ -310,15 +309,13 @@ private async void button2_Click(object sender, EventArgs e)
                 {
                     timer1.Stop();
                 }
-                // We must return to the UI thread to update controls
                 this.Invoke((Action)delegate {
                     SetUiStateForProcessing(false);
-                    ConfigureUiForMode(false); // Always reset UI to default state
+                    ConfigureUiForMode(false);
                 });
             }
 
-            // --- 4. Post-Processing (Save Results) ---
-            // This code now runs on a background thread, so all UI updates must be invoked.
+        
             this.Invoke((Action)delegate {
                 label5.Text = $"Found: {finalResults.Count:N0}";
 
@@ -372,10 +369,10 @@ private async void button2_Click(object sender, EventArgs e)
             textBox1.Enabled = !isProcessing;
             checkBox1.Enabled = !isProcessing;
             checkBox2.Enabled = !isProcessing;
-            multiThreadCheckBox.Enabled = !isProcessing; // Add this line
+            multiThreadCheckBox.Enabled = !isProcessing; 
         }
 
-        // Helper method to handle saving the file, avoiding code duplication.
+
         private void SaveResults(System.Collections.Generic.List<string> lines)
         {
             using (var saveFileDialog = new SaveFileDialog())

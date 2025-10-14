@@ -142,7 +142,7 @@
             // 
             // SaveFileDialog
             // 
-            this.SaveFileDialog.FileOk += new System.ComponentModel.CancelEventHandler(this.saveFileDialog1_FileOk);
+       
             // 
             // lblFileCount
             // 
@@ -165,7 +165,6 @@
             this.lblStatus.Size = new System.Drawing.Size(134, 20);
             this.lblStatus.TabIndex = 9;
             this.lblStatus.Text = "Processing: ... 0%";
-            this.lblStatus.Click += new System.EventHandler(this.lblStatus_Click);
             // 
             // progressBar1
             // 
