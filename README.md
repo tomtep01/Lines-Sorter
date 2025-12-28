@@ -7,7 +7,7 @@ Lines Sorter is a program built to read every line, see if the line has matching
 To build this program, you need:
 
 *   **Prerequisites:**
-    *   .NET Framework (the version can be determined from the project files, but a recent version should be compatible)
+    *   .NET Framework 4.8 is recommended
     *   Microsoft Visual Studio
 
 *   **Steps:**
